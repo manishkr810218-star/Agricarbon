@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, PDFPage, rgb } from "pdf-lib";
 import { NextRequest, NextResponse } from "next/server";
+import { analyzeCarbonReadiness } from "@/lib/carbon-analysis";
 import {
   accountingSummary,
   farmSuggestions,
@@ -73,6 +74,13 @@ export async function GET(request: NextRequest) {
   const sizeGuide = landSizeGuide(Number(farm.area) || 0);
   const tips = farmSuggestions(farm, plots, events, documents, finance);
   const review = preliminaryReview(farm, plots, events, documents);
+  const creditAnalysis = analyzeCarbonReadiness(
+    farm,
+    cropRows,
+    plots,
+    events,
+    documents,
+  );
   const pdf = await PDFDocument.create();
   pdf.registerFontkit(fontkit);
   const devanagariNormal = await pdf.embedFont(
@@ -220,10 +228,40 @@ export async function GET(request: NextRequest) {
       category.label,
       Math.round(category.score) +
         "% within category; weight " +
-        category.weight +
+      category.weight +
         "%",
     );
-  heading("2. Land and property records");
+  heading("2. Carbon credit analysis");
+  item(
+    "Practice preparation",
+    Math.round(creditAnalysis.practiceScore) +
+      "/100 (self-reported; not carbon quantity)",
+  );
+  item(
+    "Evidence checklist",
+    creditAnalysis.evidenceReady +
+      " of " +
+      creditAnalysis.evidenceTotal +
+      " preparation items on file",
+  );
+  item("Historical comparison", creditAnalysis.historySignal.title);
+  write(creditAnalysis.historySignal.detail);
+  for (const check of creditAnalysis.checks)
+    write(
+      "- " +
+        (check.done ? "On file" : "Still needed") +
+        ": " +
+        check.title +
+        ". " +
+        check.detail,
+    );
+  write(
+    "This analysis identifies preparation gaps only. It does not quantify emissions, soil carbon or sellable credits.",
+    9,
+    false,
+    gray,
+  );
+  heading("3. Land and property records");
   write(sizeGuide.advice);
   item("Saved plots", plots.length);
   for (const plot of plots)
@@ -244,7 +282,7 @@ export async function GET(request: NextRequest) {
     false,
     gray,
   );
-  heading("3. Baseline and MRV status");
+  heading("4. Baseline and MRV status");
   item("Distinct crop years", farm.cropHistoryYears + " of 3 target years");
   for (const row of cropRows)
     write(
@@ -273,7 +311,7 @@ export async function GET(request: NextRequest) {
           ? " [practice evidence linked]"
           : " [no practice evidence]"),
     );
-  heading("4. Evidence on file");
+  heading("5. Evidence on file");
   item("Files stored privately", documents.length);
   for (const doc of documents)
     write(
@@ -287,7 +325,7 @@ export async function GET(request: NextRequest) {
           : "") +
         " (unverified)",
     );
-  heading("5. Farm accounts");
+  heading("6. Farm accounts");
   item(
     "Recorded income",
     "INR " + (financeTotals.incomePaise / 100).toFixed(2),
@@ -311,7 +349,7 @@ export async function GET(request: NextRequest) {
         " INR " +
         (entry.amount_paise / 100).toFixed(2),
     );
-  heading("6. Current carbon credits");
+  heading("7. Current carbon credits");
   write(
     "Verified balance: unavailable. No carbon registry is connected.",
     10,
@@ -335,7 +373,7 @@ export async function GET(request: NextRequest) {
         entry.reference +
         " [self-reported]",
     );
-  heading("7. Suggested next actions");
+  heading("8. Suggested next actions");
   if (!tips.length) write("Keep records current each season.");
   for (const tip of tips) write("- " + tip.title + ": " + tip.action);
   heading("Important limitation");

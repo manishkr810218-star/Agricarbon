@@ -62,9 +62,9 @@ export default function OverviewPanel({
           </p>
           <button
             className="button button-light"
-            onClick={() => onNavigate("assessment")}
+            onClick={() => onNavigate("analysis")}
           >
-            Update farm answers <ArrowRight size={17} />
+            Analyze my carbon readiness <ArrowRight size={17} />
           </button>
         </div>
         <div className="portal-hero-graphic">

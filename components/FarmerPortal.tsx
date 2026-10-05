@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Activity,
   BadgeIndianRupee,
+  BarChart3,
   BookOpen,
   ClipboardCheck,
   FileText,
@@ -43,6 +44,7 @@ import LandPanel from "./portal/LandPanel";
 import MrvPanel from "./portal/MrvPanel";
 import AccountsPanel from "./portal/AccountsPanel";
 import GuidePanel from "./portal/GuidePanel";
+import CarbonAnalysisPanel from "./portal/CarbonAnalysisPanel";
 
 export default function FarmerPortal({ user }: { user: User }) {
   const router = useRouter();
@@ -221,6 +223,11 @@ export default function FarmerPortal({ user }: { user: User }) {
   const nav = [
     { id: "overview" as PortalPage, text: "Overview", icon: Sprout },
     {
+      id: "analysis" as PortalPage,
+      text: "Carbon credit analysis",
+      icon: BarChart3,
+    },
+    {
       id: "assessment" as PortalPage,
       text: "Farm assessment",
       icon: ClipboardCheck,
@@ -374,6 +381,9 @@ export default function FarmerPortal({ user }: { user: User }) {
             <>
               {page === "overview" && (
                 <OverviewPanel data={data} onNavigate={navigate} />
+              )}
+              {page === "analysis" && (
+                <CarbonAnalysisPanel data={data} onNavigate={navigate} />
               )}
               {page === "assessment" && (
                 <AssessmentPanel

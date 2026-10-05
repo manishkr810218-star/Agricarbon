@@ -4,6 +4,7 @@ import type { ProgramPath } from "./programs";
 export type Assessment = ReturnType<typeof assessFarm>;
 export type PortalPage =
   | "overview"
+  | "analysis"
   | "assessment"
   | "crops"
   | "documents"

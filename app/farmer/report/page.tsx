@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowLeft, FileDown, Leaf, ShieldCheck } from "lucide-react";
 import PrintButton from "@/components/PrintButton";
+import { analyzeCarbonReadiness } from "@/lib/carbon-analysis";
 import {
   accountingSummary,
   mrvSummary,
@@ -11,6 +12,7 @@ import type {
   CreditEntry,
   FarmDocument,
   FinanceEntry,
+  LandPlot,
   MrvEvent,
 } from "@/lib/portal-types";
 import { matchProgramPaths } from "@/lib/programs";
@@ -62,6 +64,16 @@ export default async function FarmerReportPage() {
       "SELECT id, kind, original_name, mime_type, size_bytes, created_at, plot_id FROM documents WHERE user_id = ?",
     )
     .all(user.id) as FarmDocument[];
+  const plots = getDb()
+    .prepare("SELECT * FROM land_plots WHERE user_id = ?")
+    .all(user.id) as LandPlot[];
+  const creditAnalysis = analyzeCarbonReadiness(
+    farm,
+    crops,
+    plots,
+    events,
+    docIds,
+  );
   const mrv = mrvSummary(farm, events, docIds);
   const accounts = accountingSummary(finance);
   const date = new Date().toLocaleDateString("en-IN", {
@@ -127,6 +139,41 @@ export default async function FarmerReportPage() {
               </div>
             ))}
           </div>
+        </section>
+        <section className="report-section">
+          <h2>Carbon credit analysis</h2>
+          <p>
+            <strong>{creditAnalysis.review.label}.</strong>{" "}
+            {creditAnalysis.review.reason}
+          </p>
+          <p>
+            Practice preparation: {Math.round(creditAnalysis.practiceScore)}
+            /100 (self-reported). Evidence on file:{" "}
+            {creditAnalysis.evidenceReady}/{creditAnalysis.evidenceTotal}{" "}
+            preparation checks (unverified).
+          </p>
+          <p>
+            {creditAnalysis.historySignal.title}: {" "}
+            {creditAnalysis.historySignal.detail}
+          </p>
+          {creditAnalysis.checks.some((check) => !check.done) ? (
+            <ul className="report-documents">
+              {creditAnalysis.checks
+                .filter((check) => !check.done)
+                .map((check) => (
+                  <li key={check.key}>
+                    <strong>Still needed: {check.title}</strong>
+                    <span>{check.detail}</span>
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p>
+              All six preparation checks are on file. A real program must
+              decide eligibility and verify the evidence.
+            </p>
+          )}
+          <p>No credit quantity is calculated. Verified balance unavailable.</p>
         </section>
         <section className="report-section">
           <h2>What to do next</h2>

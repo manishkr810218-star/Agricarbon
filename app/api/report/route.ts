@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { analyzeCarbonReadiness } from "@/lib/carbon-analysis";
 import { matchProgramPaths } from "@/lib/programs";
 import {
   accountingSummary,
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
       `SELECT year, season, crop, tillage, irrigation, input_notes, water_notes
     FROM crop_records WHERE user_id = ? ORDER BY year DESC`,
     )
-    .all(user.id);
+    .all(user.id) as { year: number; tillage: string }[];
   const documents = getDb()
     .prepare(
       `SELECT kind, original_name, created_at
@@ -77,6 +78,13 @@ export async function GET(request: NextRequest) {
       areaAcres: farm.area,
     },
     assessment,
+    creditAnalysis: analyzeCarbonReadiness(
+      farm,
+      cropRecords,
+      plots,
+      events,
+      evidenceFiles,
+    ),
     preliminaryReview: preliminaryReview(farm, plots, events, evidenceFiles),
     cropRecords,
     documents,

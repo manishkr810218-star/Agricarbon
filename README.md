@@ -4,7 +4,7 @@ AgriCarbon is a farmer-friendly **carbon-program readiness web app** built at Us
 
 **Presenting the project?** Use the [feature walkthrough and five-minute judge demo](docs/JUDGE_GUIDE.md). It explains what each screen does, what to say, and the prototype's limits.
 
-The app has a public editable demo and a signed-in farmer workspace. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
+The app has a public editable demo and a signed-in farmer workspace. The main **Carbon credit analysis** screen combines reported practices, historical crop records, a six-part evidence checklist, and a what-if readiness preview. It shows what to prepare for an external program review. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
 
 ## Show the UI to mentors
 
@@ -23,6 +23,12 @@ The screenshots below show the working frontend. Open this README on GitHub to v
 ![Farmer workspace with readiness score and action plan](docs/portal-desktop-preview.png)
 
 <img src="docs/portal-mobile-preview.png" alt="Farmer workspace on a phone" width="390" />
+
+**Main feature: Carbon credit analysis (fictional demonstration data)**
+
+![Carbon credit analysis with practices, evidence checks, and a readiness scenario](docs/carbon-analysis-preview.png)
+
+<img src="docs/carbon-analysis-mobile-preview.png" alt="Carbon credit analysis on a phone" width="390" />
 
 **New workflows (synthetic example data)**
 
@@ -76,12 +82,13 @@ If the page still looks old, check that VS Code's terminal is in the folder with
 1. Open `/` for an **editable example farm**. Change answers in **Check readiness** and see the six-category score update. This public demo has an English/Hindi switch.
 2. Open **Farmer login** and register with a name, mobile number, password, location, land arrangement, and farm area. No SMS service is needed for this local prototype.
 3. In the farmer workspace, save practice, input, water, and soil answers. Add crop seasons from different years; the recorded year count updates automatically.
-4. Open **Land & papers** to list separate plots and see an indicative land-size band. Carbon programs set their own minimum and maximum land criteria. Save deeds, leases, boundary maps, tax receipts, soil reports, bills, or photos in **Document locker**. Files are private to that account and **unverified**.
-5. Open **MRV diary** to add dated practice logs and link each to a saved evidence file. The four-step view distinguishes baseline, monitoring, evidence and independent verification.
-6. Open **Farm accounts** to record INR income and costs. External credit transactions can be recorded with a registry reference as **self-reported** entries. There is **no verified credit balance** until a real registry is connected.
-7. Ask **My guide** a prewritten question. Its answers and personalized suggestions come from visible rules and the farmer's saved records; it does not use an AI service.
-8. Try **Program pathways** and **Farmer groups**. Only a group organizer sees aggregated member readiness; documents remain private.
-9. Choose **Download PDF report** to get an actual generated PDF with score, land, MRV, documents, accounts, suggested next actions and a clear credit-status warning. The printable HTML view remains available at `/farmer/report`.
+4. Open **Carbon credit analysis** to compare practice preparation with evidence coverage, see a cautious historical tillage clue, and try an illustrative next action. The score preview changes no saved records and never estimates credits. Each missing evidence item links to the screen where it can be addressed.
+5. Open **Land & papers** to list separate plots and see an indicative land-size band. Carbon programs set their own minimum and maximum land criteria. Save deeds, leases, boundary maps, tax receipts, soil reports, bills, or photos in **Document locker**. Files are private to that account and **unverified**.
+6. Open **MRV diary** to add dated practice logs and link each to a saved evidence file. The four-step view distinguishes baseline, monitoring, evidence and independent verification.
+7. Open **Farm accounts** to record INR income and costs. External credit transactions can be recorded with a registry reference as **self-reported** entries. There is **no verified credit balance** until a real registry is connected.
+8. Ask **My guide** a prewritten question. Its answers and personalized suggestions come from visible rules and the farmer's saved records; it does not use an AI service.
+9. Try **Program pathways** and **Farmer groups**. Only a group organizer sees aggregated member readiness; documents remain private.
+10. Choose **Download PDF report** to get an actual generated PDF with score, carbon-credit analysis, land, MRV, documents, accounts, suggested next actions and a clear credit-status warning. The printable HTML view remains available at `/farmer/report`.
 
 The public demo saves answers in browser `localStorage`. Signed-in accounts, plots, crop history, MRV diary, finance and credit entries, and file metadata use a local SQLite database; uploaded files are saved under the ignored `.agricarbon-data/` directory. Data stays on the computer running the app. Back up that directory if you need to keep farmer records. Set `AGRICARBON_DATA_DIR` before starting the server to choose another location. **Never commit this data directory to the public repository.** The local prototype does not encrypt the database or files at rest; use synthetic documents for public demos.
 
@@ -109,6 +116,7 @@ The bands are **High** (80–100), **Medium** (60–79), **Developing** (40–59
 - `app/api/report/pdf/` — private, generated PDF report
 - `lib/server/` — SQLite storage, password hashing, sessions, validation, and private files
 - `lib/readiness.ts`, `lib/insights.ts`, and `lib/programs.ts` — transparent scoring, gap advice, holding-size guidance, MRV status and pathway rules
+- `lib/carbon-analysis.ts` — practice and evidence analysis, historical tillage clue, and illustrative readiness scenarios
 
 The app uses Next.js, React, TypeScript, CSS, Lucide icons, SQLite and pdf-lib. It needs no API keys. Passwords are salted and hashed; session cookies are HTTP-only, and authenticated requests enforce the same origin. Files are limited to PDF, JPEG, PNG, or WebP at 8 MB each. For a real public deployment, move the database and files to managed persistent services, enable HTTPS and backups, and add production identity verification, rate limiting and abuse protection. This local hackathon app has no SMS/OTP, official land-record connection, document verification, live carbon-program or registry feed, or credit issuance.
 

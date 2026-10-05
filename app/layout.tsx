@@ -3,6 +3,7 @@ import "./globals.css";
 import "./portal.css";
 import "./report.css";
 import "./expansion.css";
+import "./carbon-analysis.css";
 
 export const metadata: Metadata = {
   title: "AgriCarbon | Farm readiness, made simple",

@@ -25,6 +25,7 @@ The GitHub repository contains code, screenshots, and this guide. It is not a ho
 | About AgriCarbon | Switch between farmer and mentor views, expand the questions, and inspect the official-resource links. | Plain-language and mentor explanations. Government sites open externally; no government data is imported. |
 | Farmer login | Register with a name, mobile number, password, location, land area, and land arrangement; sign in on later visits. | A private farmer workspace. The local prototype does not send an SMS or OTP. |
 | Overview | Sign in and open the initial dashboard. | Readiness score, crop years, document count, action plan, category scores, plot and MRV status, and the next suggested action. |
+| Carbon credit analysis | Open it from the sidebar or the Overview button. Review practice preparation, the six evidence checks, and the historical tillage clue; try one possible next action. | The main analysis shows what is recorded and what still blocks an external pre-screening conversation. The what-if preview changes only the readiness number, not saved data or actual credits. |
 | Farm assessment | Answer land, practice, input, water, soil, and document questions, then save. | A transparent readiness score and specific gaps. These answers are farmer reported. |
 | Crop history | Add each season's year, crop, tillage, irrigation, and optional input and water notes. | A seasonal timeline; three **distinct years** count toward the historical baseline checklist. |
 | Land & papers | Save each plot's name, acreage, tenure, village, and optional parcel reference. | Separate plot records, an indicative Indian holding-size category, and a warning if plot totals differ from the farm area. Program-specific minimum and maximum areas are not decided here. |
@@ -50,13 +51,13 @@ Prepare a fictional farmer profile and sample documents before the demonstration
 1. **Problem, 30 seconds:** “Farmers may use sustainable practices but often lack the records a carbon program needs to review them.”
 2. **Public demo, 45 seconds:** Change one answer in **Check readiness** and show how the score and gap list respond.
 3. **Saved farm, 90 seconds:** Open the prepared account's Overview, Crop history, Land & papers, and Document locker. Explain how the records build a farm history.
-4. **MRV and guidance, 60 seconds:** Show one dated activity linked to a photo or bill; ask **My guide** what proof is missing.
-5. **Accounts and PDF, 60 seconds:** Show recorded costs, the unavailable verified-credit balance, and the downloaded report.
+4. **Analysis and MRV, 60 seconds:** Open **Carbon credit analysis**, choose an illustrative next action, then show a dated MRV activity linked to a photo or bill.
+5. **Accounts and PDF, 60 seconds:** Show recorded costs, the unavailable verified-credit balance, and the downloaded report with its carbon-credit analysis section.
 6. **Close, 15 seconds:** “AgriCarbon prepares a farmer for an external program conversation; it does not issue or guarantee credits.”
 
 ### Short pitch
 
-> “We built AgriCarbon at Usha Martin University to make carbon-program preparation understandable for farmers. Farmers record land, crop history, practices, costs, and evidence. Our rule-based system explains a readiness score, identifies missing proof, suggests next actions, and generates a preliminary PDF. MRV records are organized in one place, while eligibility, formal measurement, verification, and credit issuance remain with an independent program and registry.”
+> “We built AgriCarbon at Usha Martin University to make carbon-program preparation understandable for farmers. Farmers record land, crop history, practices, costs, and evidence. Our carbon-credit analysis separates reported practice preparation from evidence readiness, explains missing proof, previews useful next actions, and generates a preliminary PDF. MRV records are organized in one place, while eligibility, formal measurement, verification, and credit issuance remain with an independent program and registry.”
 
 ## Questions judges may ask
 
