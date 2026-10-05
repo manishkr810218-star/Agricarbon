@@ -49,6 +49,26 @@ Open `http://localhost:3000` on that computer. To stop the server, press **Ctrl+
 
 **Windows PowerShell:** If Windows says `npm.ps1 cannot be loaded because running scripts is disabled`, use `npm.cmd ci` and `npm.cmd run dev`. This does not require changing the execution policy. You can also select **Command Prompt** from VS Code's terminal menu and use the normal `npm` commands.
 
+### Refresh an existing VS Code clone on Windows
+
+If you cloned the project earlier, GitHub changes do not appear in your local folder until you pull them. In VS Code, open the **Agricarbon** folder (the one containing `package.json`), stop any running development server with **Ctrl+C**, then open **Terminal → New Terminal**. In PowerShell, run these commands one at a time:
+
+```powershell
+git status --short --branch
+git remote -v
+git switch main
+git pull --ff-only origin main
+git log -1 --oneline
+npm.cmd ci
+npm.cmd run dev
+```
+
+The remote should be `github.com/manishkr810218-star/Agricarbon`, and `git log -1` should show the latest commit on [GitHub's main branch](https://github.com/manishkr810218-star/Agricarbon/commits/main). If `git status` lists files you have changed, keep those edits: do not reset or delete them. If the pull refuses to run because of local changes or a branch conflict, save your work and resolve that message before continuing.
+
+Open the address printed by Next.js in your browser, normally `http://localhost:3000`. If port 3000 is busy, Next.js may print another address such as `http://localhost:3001`; use the printed one. Refresh the page with **Ctrl+F5**. The land, MRV, accounts, guide, document locker, and PDF report are in **Farmer login → your farmer workspace** after you create or sign in to a local demo account. The homepage is a separate public example, so it will not show every signed-in feature.
+
+If the page still looks old, check that VS Code's terminal is in the folder with this repository's `package.json` and that `git log -1 --oneline` matches GitHub `main`. After stopping the server, you can delete only the generated `.next` cache with `Remove-Item -Recurse -Force .next` and run `npm.cmd run dev` again. Leave `.agricarbon-data` alone: it holds your local farmer accounts, records, and uploads. GitHub stores the source code, not these local records or a live website.
+
 ## What judges can try
 
 1. Open `/` for an **editable example farm**. Change answers in **Check readiness** and see the six-category score update. This public demo has an English/Hindi switch.
