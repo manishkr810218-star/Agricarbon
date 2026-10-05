@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 function ownDocument(userId: string, id: string) {
   return getDb()
     .prepare(
-      `SELECT id, kind, original_name, stored_name, mime_type, size_bytes, created_at
+      `SELECT id, kind, original_name, stored_name, mime_type, size_bytes, created_at, plot_id
     FROM documents WHERE id = ? AND user_id = ?`,
     )
     .get(id, userId) as DocumentRecord | undefined;

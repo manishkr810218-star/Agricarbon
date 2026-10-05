@@ -470,6 +470,7 @@ export default function AgriCarbonApp() {
             </span>
           </div>
           <div className="topbar-actions">
+            <Link className="account-link" href="/about">About</Link>
             <Link className="account-link" href="/login">
               {field("Farmer login", "किसान लॉगिन", lang)}{" "}
               <ArrowRight size={15} />

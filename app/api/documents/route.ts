@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
   if (!user) return errorResponse("Please sign in.", 401);
   const documents = getDb()
     .prepare(
-      `SELECT id, kind, original_name, mime_type, size_bytes, created_at
+      `SELECT id, kind, original_name, mime_type, size_bytes, created_at, plot_id
     FROM documents WHERE user_id = ? ORDER BY created_at DESC`,
     )
     .all(user.id) as Omit<DocumentRecord, "stored_name">[];
@@ -67,12 +67,22 @@ export async function POST(request: NextRequest) {
   }
   const file = form.get("file");
   const kind = form.get("kind");
+  const plotId = form.get("plotId");
   if (
     !(file instanceof File) ||
     typeof kind !== "string" ||
     !documentKinds.includes(kind as (typeof documentKinds)[number])
   ) {
     return errorResponse("Choose a file and document type.");
+  }
+  if (
+    plotId &&
+    (typeof plotId !== "string" ||
+      !getDb()
+        .prepare("SELECT 1 FROM land_plots WHERE id = ? AND user_id = ?")
+        .get(plotId, user.id))
+  ) {
+    return errorResponse("Choose one of your own land plots.");
   }
   const extension = types[file.type];
   if (!extension) return errorResponse("Use a PDF, JPEG, PNG or WebP file.");
@@ -97,8 +107,8 @@ export async function POST(request: NextRequest) {
       getDb()
         .prepare(
           `INSERT INTO documents
-      (id, user_id, kind, original_name, stored_name, mime_type, size_bytes, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, user_id, kind, original_name, stored_name, mime_type, size_bytes, created_at, plot_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         )
         .run(
           id,
@@ -109,9 +119,12 @@ export async function POST(request: NextRequest) {
           file.type,
           file.size,
           createdAt,
+          plotId || null,
         );
       const evidenceFlag = {
         land: "landProof",
+        deed: "landProof",
+        lease: "landProof",
         soil: "soilTest",
         input: "inputBills",
         photo: "fieldPhotos",
@@ -130,6 +143,7 @@ export async function POST(request: NextRequest) {
           size_bytes: file.size,
           created_at: createdAt,
           status: "unverified",
+          plot_id: plotId || null,
         },
       },
       { status: 201 },

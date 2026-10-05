@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Wheat,
 } from "lucide-react";
+import { farmSuggestions, mrvSummary, preliminaryReview } from "@/lib/insights";
 import type { PortalData, PortalPage } from "@/lib/portal-types";
 
 export default function OverviewPanel({
@@ -20,6 +21,15 @@ export default function OverviewPanel({
   onNavigate: (page: PortalPage) => void;
 }) {
   const { farm, assessment, documents, paths } = data;
+  const mrv = mrvSummary(farm, data.mrvEvents, documents);
+  const tips = farmSuggestions(
+    farm,
+    data.plots,
+    data.mrvEvents,
+    documents,
+    data.financeEntries,
+  );
+  const review = preliminaryReview(farm, data.plots, data.mrvEvents, documents);
   return (
     <>
       <div className="page-heading">
@@ -104,6 +114,39 @@ export default function OverviewPanel({
             Private · awaiting verification
           </span>
         </div>
+      </div>
+      <section className="panel agri-overview-guide">
+        <div>
+          <span className="card-label">YOUR SMART, RULE-BASED GUIDE</span>
+          <h3>{review.label}</h3>
+          <p>{tips[0]?.title || "Keep your farm records current."}</p>
+          <small>
+            {tips[0]?.reason || "Your current checklist has no urgent gaps."}
+          </small>
+        </div>
+        <button
+          className="button button-primary"
+          onClick={() => onNavigate("guide")}
+        >
+          Ask my guide <ArrowRight size={17} />
+        </button>
+      </section>
+      <div className="agri-overview-status">
+        <button className="panel" onClick={() => onNavigate("mrv")}>
+          <span className="card-label">MRV DIARY</span>
+          <strong>{data.mrvEvents.length} activities</strong>
+          <small>{mrv.linkedEvidence} linked to evidence · open diary →</small>
+        </button>
+        <button className="panel" onClick={() => onNavigate("land")}>
+          <span className="card-label">LAND PAPERS</span>
+          <strong>{data.plots.length} plots</strong>
+          <small>Organize each plot and its property papers →</small>
+        </button>
+        <button className="panel" onClick={() => onNavigate("accounts")}>
+          <span className="card-label">CURRENT CREDITS</span>
+          <strong>Not verified</strong>
+          <small>No registry connected · see accounts →</small>
+        </button>
       </div>
       <div className="portal-overview-grid">
         <section className="panel portal-overview-card">
@@ -234,9 +277,9 @@ export default function OverviewPanel({
           AgriCarbon organizes readiness and evidence. Credits require a
           verified program, formal measurement and independent checks.
         </span>
-        <a href="/farmer/report">
+        <a href="/api/report/pdf">
           <FileDown size={16} />
-          View / print report
+          Download PDF report
         </a>
       </div>
     </>

@@ -10,10 +10,14 @@ import {
   Trash2,
   UploadCloud,
 } from "lucide-react";
-import type { FarmDocument } from "@/lib/portal-types";
+import type { FarmDocument, LandPlot } from "@/lib/portal-types";
 
 const kinds: Record<string, string> = {
   land: "Land proof",
+  deed: "Ownership deed / land record",
+  lease: "Lease agreement",
+  boundary: "Boundary map / survey",
+  tax: "Land tax receipt",
   soil: "Soil report",
   input: "Input bill",
   photo: "Field photo",
@@ -22,20 +26,23 @@ const kinds: Record<string, string> = {
 
 export default function DocumentsPanel({
   documents,
+  plots,
   onUpload,
   onDelete,
   busy,
 }: {
   documents: FarmDocument[];
-  onUpload: (kind: string, file: File) => Promise<void>;
+  plots: LandPlot[];
+  onUpload: (kind: string, file: File, plotId: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   busy: boolean;
 }) {
   const [kind, setKind] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [plotId, setPlotId] = useState("");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (file) await onUpload(kind, file);
+    if (file) await onUpload(kind, file, plotId);
   }
   const counts = Object.keys(kinds).map((key) => ({
     key,
@@ -49,7 +56,7 @@ export default function DocumentsPanel({
           <p className="eyebrow">PRIVATE FARM RECORDS</p>
           <h1>Your document locker.</h1>
           <p>
-            Save soil reports, land records, bills and photos. Only your
+            Save soil reports, property papers, bills and photos. Only your
             signed-in account can download these files.
           </p>
         </div>
@@ -87,6 +94,22 @@ export default function DocumentsPanel({
                 ))}
               </select>
             </label>
+            {plots.length > 0 && (
+              <label>
+                Related land plot (optional)
+                <select
+                  value={plotId}
+                  onChange={(e) => setPlotId(e.target.value)}
+                >
+                  <option value="">General farm file</option>
+                  {plots.map((plot) => (
+                    <option key={plot.id} value={plot.id}>
+                      {plot.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <label className="portal-drop">
               <UploadCloud size={29} />
               <strong>
@@ -163,6 +186,10 @@ export default function DocumentsPanel({
                   <strong>{item.original_name}</strong>
                   <small>
                     {kinds[item.kind] || item.kind} ·{" "}
+                    {item.plot_id
+                      ? (plots.find((plot) => plot.id === item.plot_id)?.name ||
+                          "Plot") + " · "
+                      : ""}
                     {new Date(item.created_at).toLocaleDateString()} ·{" "}
                     {(item.size_bytes / 1024).toFixed(0)} KB · Unverified
                   </small>

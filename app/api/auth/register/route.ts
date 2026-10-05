@@ -3,12 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { emptyFarm } from "@/lib/readiness";
 import { createSession, hashPassword, normalizePhone } from "@/lib/server/auth";
 import { getDb } from "@/lib/server/db";
-import { errorResponse, jsonBody } from "@/lib/server/http";
+import { errorResponse, jsonBody, sameOrigin } from "@/lib/server/http";
 import { registerSchema } from "@/lib/server/schema";
 
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
+  if (!sameOrigin(request))
+    return errorResponse("Request origin is not allowed.", 403);
   const result = registerSchema.safeParse(await jsonBody(request));
   if (!result.success)
     return errorResponse(

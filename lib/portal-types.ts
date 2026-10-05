@@ -3,7 +3,16 @@ import type { ProgramPath } from "./programs";
 
 export type Assessment = ReturnType<typeof assessFarm>;
 export type PortalPage =
-  "overview" | "assessment" | "crops" | "documents" | "programs" | "groups";
+  | "overview"
+  | "assessment"
+  | "crops"
+  | "documents"
+  | "programs"
+  | "groups"
+  | "land"
+  | "mrv"
+  | "accounts"
+  | "guide";
 export type FarmResponse = { farm: Farm; assessment: Assessment };
 export type Crop = {
   id: string;
@@ -22,6 +31,45 @@ export type FarmDocument = {
   original_name: string;
   mime_type: string;
   size_bytes: number;
+  created_at: string;
+  plot_id: string | null;
+};
+export type LandPlot = {
+  id: string;
+  name: string;
+  area_acres: number;
+  tenure: "owned" | "leased" | "other";
+  village: string;
+  parcel_reference: string;
+  notes: string;
+  created_at: string;
+};
+export type MrvEvent = {
+  id: string;
+  event_date: string;
+  practice: string;
+  details: string;
+  evidence_document_id: string | null;
+  created_at: string;
+};
+export type FinanceEntry = {
+  id: string;
+  entry_date: string;
+  kind: "expense" | "income";
+  category: string;
+  amount_paise: number;
+  note: string;
+  evidence_document_id: string | null;
+  created_at: string;
+};
+export type CreditEntry = {
+  id: string;
+  entry_date: string;
+  action: "issued" | "retired";
+  quantity_milli: number;
+  registry: string;
+  reference: string;
+  note: string;
   created_at: string;
 };
 export type FarmerGroup = {
@@ -54,4 +102,8 @@ export type PortalData = FarmResponse & {
   documents: FarmDocument[];
   groups: FarmerGroup[];
   paths: ProgramPath[];
+  plots: LandPlot[];
+  mrvEvents: MrvEvent[];
+  financeEntries: FinanceEntry[];
+  creditEntries: CreditEntry[];
 };

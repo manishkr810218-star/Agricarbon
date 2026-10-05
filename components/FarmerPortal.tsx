@@ -5,13 +5,17 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
+  Activity,
+  BadgeIndianRupee,
   BookOpen,
   ClipboardCheck,
   FileText,
   FolderOpen,
+  Lightbulb,
   Leaf,
   LogOut,
   Menu,
+  MapPinned,
   ShieldCheck,
   Sprout,
   Users,
@@ -35,6 +39,10 @@ import CropsPanel from "./portal/CropsPanel";
 import DocumentsPanel from "./portal/DocumentsPanel";
 import ProgramsPanel from "./portal/ProgramsPanel";
 import GroupsPanel from "./portal/GroupsPanel";
+import LandPanel from "./portal/LandPanel";
+import MrvPanel from "./portal/MrvPanel";
+import AccountsPanel from "./portal/AccountsPanel";
+import GuidePanel from "./portal/GuidePanel";
 
 export default function FarmerPortal({ user }: { user: User }) {
   const router = useRouter();
@@ -48,12 +56,26 @@ export default function FarmerPortal({ user }: { user: User }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const refresh = useCallback(async () => {
-    const [farm, crops, documents, groups, programs] = await Promise.all([
+    const [
+      farm,
+      crops,
+      documents,
+      groups,
+      programs,
+      plots,
+      mrv,
+      finance,
+      credits,
+    ] = await Promise.all([
       api<FarmResponse>("/api/farm"),
       api<{ records: Crop[] }>("/api/crops"),
       api<{ documents: FarmDocument[] }>("/api/documents"),
       api<{ groups: FarmerGroup[] }>("/api/groups"),
       api<{ paths: PortalData["paths"] }>("/api/programs"),
+      api<{ records: PortalData["plots"] }>("/api/records/plots"),
+      api<{ records: PortalData["mrvEvents"] }>("/api/records/mrv"),
+      api<{ records: PortalData["financeEntries"] }>("/api/records/finance"),
+      api<{ records: PortalData["creditEntries"] }>("/api/records/credits"),
     ]);
     const next = {
       ...farm,
@@ -61,6 +83,10 @@ export default function FarmerPortal({ user }: { user: User }) {
       documents: documents.documents,
       groups: groups.groups,
       paths: programs.paths,
+      plots: plots.records,
+      mrvEvents: mrv.records,
+      financeEntries: finance.records,
+      creditEntries: credits.records,
     };
     setData(next);
     setDraft(farm.farm);
@@ -90,8 +116,10 @@ export default function FarmerPortal({ user }: { user: User }) {
     try {
       await action();
       setNotice(success);
+      return true;
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Please try again.");
+      return false;
     } finally {
       setBusy(false);
     }
@@ -124,11 +152,12 @@ export default function FarmerPortal({ user }: { user: User }) {
     }, "Crop record removed.");
   }
 
-  async function uploadDocument(kind: string, file: File) {
+  async function uploadDocument(kind: string, file: File, plotId: string) {
     await run(async () => {
       const body = new FormData();
       body.set("kind", kind);
       body.set("file", file);
+      if (plotId) body.set("plotId", plotId);
       await api("/api/documents", { method: "POST", body });
       await refresh();
     }, "Document saved privately. It is not yet verified.");
@@ -161,6 +190,28 @@ export default function FarmerPortal({ user }: { user: User }) {
     }, "Group summary loaded.");
   }
 
+  async function addRecord(
+    kind: "plots" | "mrv" | "finance" | "credits",
+    value: unknown,
+  ) {
+    return await run(async () => {
+      await api("/api/records/" + kind, jsonRequest("POST", value));
+      await refresh();
+    }, "Record saved privately.");
+  }
+
+  async function deleteRecord(
+    kind: "plots" | "mrv" | "finance" | "credits",
+    id: string,
+  ) {
+    await run(async () => {
+      await api("/api/records/" + kind + "?id=" + encodeURIComponent(id), {
+        method: "DELETE",
+      });
+      await refresh();
+    }, "Record removed.");
+  }
+
   async function logout() {
     await api("/api/auth/logout", { method: "POST" });
     router.push("/login");
@@ -175,6 +226,8 @@ export default function FarmerPortal({ user }: { user: User }) {
       icon: ClipboardCheck,
     },
     { id: "crops" as PortalPage, text: "Crop history", icon: BookOpen },
+    { id: "land" as PortalPage, text: "Land & papers", icon: MapPinned },
+    { id: "mrv" as PortalPage, text: "MRV diary", icon: Activity },
     {
       id: "documents" as PortalPage,
       text: "Document locker",
@@ -182,6 +235,12 @@ export default function FarmerPortal({ user }: { user: User }) {
     },
     { id: "programs" as PortalPage, text: "Program pathways", icon: FileText },
     { id: "groups" as PortalPage, text: "Farmer groups", icon: Users },
+    {
+      id: "accounts" as PortalPage,
+      text: "Farm accounts",
+      icon: BadgeIndianRupee,
+    },
+    { id: "guide" as PortalPage, text: "My guide", icon: Lightbulb },
   ];
 
   return (
@@ -210,6 +269,9 @@ export default function FarmerPortal({ user }: { user: User }) {
             </button>
           ))}
         </nav>
+        <Link className="agri-about-nav" href="/about">
+          About AgriCarbon →
+        </Link>
         <div className="sidebar-bottom">
           <div className="side-help">
             <span className="side-help-icon">
@@ -334,6 +396,7 @@ export default function FarmerPortal({ user }: { user: User }) {
               {page === "documents" && (
                 <DocumentsPanel
                   documents={data.documents}
+                  plots={data.plots}
                   onUpload={uploadDocument}
                   onDelete={deleteDocument}
                   busy={busy}
@@ -349,6 +412,45 @@ export default function FarmerPortal({ user }: { user: User }) {
                   onView={loadGroup}
                   busy={busy}
                 />
+              )}
+              {page === "land" && (
+                <LandPanel
+                  farmArea={data.farm.area}
+                  state={data.farm.state}
+                  village={data.farm.village}
+                  plots={data.plots}
+                  documents={data.documents}
+                  onAdd={(value) => addRecord("plots", value)}
+                  onDelete={(id) => deleteRecord("plots", id)}
+                  onNavigate={navigate}
+                  busy={busy}
+                />
+              )}
+              {page === "mrv" && (
+                <MrvPanel
+                  farm={data.farm}
+                  events={data.mrvEvents}
+                  documents={data.documents}
+                  onAdd={(value) => addRecord("mrv", value)}
+                  onDelete={(id) => deleteRecord("mrv", id)}
+                  onNavigate={navigate}
+                  busy={busy}
+                />
+              )}
+              {page === "accounts" && (
+                <AccountsPanel
+                  financeEntries={data.financeEntries}
+                  creditEntries={data.creditEntries}
+                  documents={data.documents}
+                  onAddMoney={(value) => addRecord("finance", value)}
+                  onAddCredit={(value) => addRecord("credits", value)}
+                  onDeleteMoney={(id) => deleteRecord("finance", id)}
+                  onDeleteCredit={(id) => deleteRecord("credits", id)}
+                  busy={busy}
+                />
+              )}
+              {page === "guide" && (
+                <GuidePanel data={data} onNavigate={navigate} />
               )}
             </>
           )}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { todayIndia } from "@/lib/date";
 
 const shortText = z.string().trim().min(1).max(100);
 const area = z
@@ -82,3 +83,59 @@ export const groupSchema = z.discriminatedUnion("action", [
       .regex(/^[A-F0-9]{12}$/),
   }),
 ]);
+
+const optionalText = z.string().trim().max(500);
+const eventDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a valid date.")
+  .refine(
+    (value) =>
+      !Number.isNaN(Date.parse(value)) &&
+      new Date(value + "T00:00:00Z").toISOString().slice(0, 10) === value &&
+      value <= todayIndia(),
+    "Date cannot be in the future.",
+  );
+const evidenceDocumentId = z.string().uuid().nullable().optional();
+
+export const plotSchema = z.object({
+  name: shortText,
+  areaAcres: z.number().finite().positive().max(100000),
+  tenure: z.enum(["owned", "leased", "other"]),
+  village: shortText,
+  parcelReference: z.string().trim().max(100),
+  notes: optionalText,
+});
+
+export const mrvSchema = z.object({
+  eventDate,
+  practice: z.enum([
+    "tillage",
+    "cover_crop",
+    "residue",
+    "fertilizer",
+    "irrigation",
+    "soil_sample",
+    "field_photo",
+    "other",
+  ]),
+  details: z.string().trim().min(3).max(500),
+  evidenceDocumentId,
+});
+
+export const financeSchema = z.object({
+  entryDate: eventDate,
+  kind: z.enum(["expense", "income"]),
+  category: shortText,
+  amountRupees: z.number().finite().min(0.01).max(100000000),
+  note: optionalText,
+  evidenceDocumentId,
+});
+
+export const creditSchema = z.object({
+  entryDate: eventDate,
+  action: z.enum(["issued", "retired"]),
+  quantity: z.number().finite().min(0.001).max(100000000),
+  registry: shortText,
+  reference: shortText,
+  note: optionalText,
+});

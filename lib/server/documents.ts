@@ -5,6 +5,10 @@ import { getDataDir } from "./db";
 
 export const documentKinds = [
   "land",
+  "deed",
+  "lease",
+  "boundary",
+  "tax",
   "soil",
   "input",
   "photo",
@@ -20,6 +24,7 @@ export type DocumentRecord = {
   mime_type: string;
   size_bytes: number;
   created_at: string;
+  plot_id: string | null;
 };
 
 export function uploadDir() {

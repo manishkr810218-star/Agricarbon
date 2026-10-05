@@ -8,6 +8,7 @@ import {
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "./db";
+import { sameOrigin } from "./http";
 
 export const SESSION_COOKIE = "agricarbon_session";
 const SESSION_SECONDS = 60 * 60 * 24 * 7;
@@ -86,6 +87,9 @@ function lookupSession(token: string | undefined) {
 }
 
 export function userFromRequest(request: NextRequest) {
+  const method = request.method.toUpperCase();
+  if (method !== "GET" && method !== "HEAD" && !sameOrigin(request))
+    return null;
   return lookupSession(request.cookies.get(SESSION_COOKIE)?.value);
 }
 

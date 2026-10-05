@@ -1,7 +1,18 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Leaf, ShieldCheck } from "lucide-react";
+import { ArrowLeft, FileDown, Leaf, ShieldCheck } from "lucide-react";
 import PrintButton from "@/components/PrintButton";
+import {
+  accountingSummary,
+  mrvSummary,
+  selfReportedCredits,
+} from "@/lib/insights";
+import type {
+  CreditEntry,
+  FarmDocument,
+  FinanceEntry,
+  MrvEvent,
+} from "@/lib/portal-types";
 import { matchProgramPaths } from "@/lib/programs";
 import { userFromPageCookie } from "@/lib/server/auth";
 import { getDb } from "@/lib/server/db";
@@ -35,6 +46,24 @@ export default async function FarmerReportPage() {
     )
     .all(user.id) as DocumentRow[];
   const paths = matchProgramPaths(farm);
+  const events = getDb()
+    .prepare(
+      "SELECT * FROM mrv_events WHERE user_id = ? ORDER BY event_date DESC",
+    )
+    .all(user.id) as MrvEvent[];
+  const finance = getDb()
+    .prepare("SELECT * FROM finance_entries WHERE user_id = ?")
+    .all(user.id) as FinanceEntry[];
+  const credits = getDb()
+    .prepare("SELECT * FROM credit_entries WHERE user_id = ?")
+    .all(user.id) as CreditEntry[];
+  const docIds = getDb()
+    .prepare(
+      "SELECT id, kind, original_name, mime_type, size_bytes, created_at, plot_id FROM documents WHERE user_id = ?",
+    )
+    .all(user.id) as FarmDocument[];
+  const mrv = mrvSummary(farm, events, docIds);
+  const accounts = accountingSummary(finance);
   const date = new Date().toLocaleDateString("en-IN", {
     timeZone: "Asia/Kolkata",
     day: "numeric",
@@ -50,6 +79,9 @@ export default async function FarmerReportPage() {
           Back to my farm
         </Link>
         <PrintButton />
+        <a href="/api/report/pdf">
+          <FileDown size={16} /> Download PDF
+        </a>
       </div>
       <article className="report-sheet">
         <header className="report-header">
@@ -179,6 +211,26 @@ export default async function FarmerReportPage() {
               </div>
             ))}
           </div>
+        </section>
+        <section className="report-section">
+          <h2>MRV and farm accounts</h2>
+          <p>
+            {events.length} dated activity logs; {mrv.linkedEvidence} linked to
+            saved evidence. Independent verification remains required.
+          </p>
+          <p>
+            Recorded income: ₹{(accounts.incomePaise / 100).toFixed(2)} ·
+            expenses: ₹{(accounts.expensePaise / 100).toFixed(2)} · net: ₹
+            {(accounts.netPaise / 100).toFixed(2)}
+          </p>
+        </section>
+        <section className="report-section">
+          <h2>Current carbon credits</h2>
+          <p>
+            Verified balance unavailable; no registry is connected.
+            Self-reported transaction balance:{" "}
+            {selfReportedCredits(credits).toFixed(3)} credits (unverified).
+          </p>
         </section>
         <footer className="report-foot">
           <ShieldCheck size={19} />
