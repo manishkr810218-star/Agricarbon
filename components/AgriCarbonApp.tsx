@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -469,6 +470,10 @@ export default function AgriCarbonApp() {
             </span>
           </div>
           <div className="topbar-actions">
+            <Link className="account-link" href="/login">
+              {field("Farmer login", "किसान लॉगिन", lang)}{" "}
+              <ArrowRight size={15} />
+            </Link>
             <button
               className="language-button"
               onClick={() => setLang(lang === "en" ? "hi" : "en")}

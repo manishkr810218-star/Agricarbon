@@ -1,8 +1,8 @@
 # AgriCarbon
 
-AgriCarbon is a farmer-friendly **carbon-program readiness demo** built at Usha Martin University for a 24-hour hackathon. It helps a farmer answer three questions: **Am I ready? What is missing? What should I do next?**
+AgriCarbon is a farmer-friendly **carbon-program readiness web app** built at Usha Martin University for a 24-hour hackathon. It helps a farmer answer three questions: **Am I ready? What is missing? What should I do next?**
 
-The current project is a frontend prototype. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
+The app has a public editable demo and a signed-in farmer workspace. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
 
 ## Show the UI to mentors
 
@@ -16,28 +16,37 @@ The screenshots below show the working frontend. Open this README on GitHub to v
 
 <img src="docs/mobile-preview.png" alt="AgriCarbon mobile dashboard" width="390" />
 
-For an interactive demo on a laptop, follow **Run locally** below. In the app, click **Check my readiness**, change an answer, and show how the score and next steps update. Then open **My records** and use the **अ / EN** button to show Hindi.
+**Signed-in farmer workspace**
+
+![Farmer workspace with readiness score and action plan](docs/portal-desktop-preview.png)
+
+<img src="docs/portal-mobile-preview.png" alt="Farmer workspace on a phone" width="390" />
+
+For an interactive demo on a laptop, follow **Run locally** below. The public demo needs no account. For the saved farmer workflow, choose **Farmer login**, create an account, and add a crop season or document. The private workspace uses the same readiness rules as the demo.
 
 ## Run locally
 
-Requires Node.js 20 or newer.
+Use Node.js **22 LTS** or 24. npm comes with Node.js. Clone this repository and open the `Agricarbon` folder in VS Code. In **Terminal → New Terminal**, run:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000`. For a production check, run `npm run build` and `npm run start`.
+Open `http://localhost:3000` on that computer. To stop the server, press **Ctrl+C**. For a production check, run `npm run build` and `npm run start`.
+
+**Windows PowerShell:** If Windows says `npm.ps1 cannot be loaded because running scripts is disabled`, use `npm.cmd ci` and `npm.cmd run dev`. This does not require changing the execution policy. You can also select **Command Prompt** from VS Code's terminal menu and use the normal `npm` commands.
 
 ## What judges can try
 
-1. The home screen opens with an **editable example farm**. Its score shows how the six categories combine.
-2. Choose **Check readiness** and change answers in the three-step form. The score updates immediately.
-3. Choose **My records** to mark evidence available and see the personalized action plan.
-4. Switch between **English and Hindi** with the language button.
-5. Use **Start with a blank farm** at the bottom to see a new farmer journey, or **Load demo farm** to reset the example.
+1. Open `/` for an **editable example farm**. Change answers in **Check readiness** and see the six-category score update. This public demo has an English/Hindi switch.
+2. Open **Farmer login** and register with a name, mobile number, password, location, land arrangement, and farm area. No SMS service is needed for this local prototype.
+3. In the farmer workspace, save practice, input, water, and soil answers. Add crop seasons from different years; the recorded year count updates automatically.
+4. Upload a PDF or photo in **Document locker**. It is stored privately for that account and marked **unverified**. Uploading land proof, a soil report, an input bill, or a field photo also marks the matching evidence answer as available.
+5. Open **Program pathways** for rule-based suggestions, then **Farmer groups** to create an invite code. Register a second account to join. Only the organizer can see aggregated member readiness; documents remain private.
+6. Open **View / print report** on the farmer overview and use the browser's **Save as PDF** print option.
 
-Answers are saved in the browser's `localStorage`, so the demo works without an account or backend. Clearing browser storage removes the saved answers. The records page is a checklist; no document files are uploaded, stored, or verified. Do not treat its ticks as independent evidence.
+The public demo saves answers in browser `localStorage`. Signed-in accounts, crop records, and file metadata use a local SQLite database; uploaded files are saved under the ignored `.agricarbon-data/` directory. Data stays on the computer running the app. Back up that directory if you need to keep farmer records. Set `AGRICARBON_DATA_DIR` before starting the server to choose another location. **Never commit this data directory to the public repository.**
 
 ## Readiness model
 
@@ -56,12 +65,22 @@ The bands are **High** (80–100), **Medium** (60–79), **Developing** (40–59
 
 ## Project structure
 
-- `app/page.tsx` — entry page
-- `components/AgriCarbonApp.tsx` — screens, forms, local storage, and language copy
-- `lib/readiness.ts` — data model, six-category scoring, and action-plan rules
-- `app/globals.css` — responsive design
+- `app/page.tsx` and `components/AgriCarbonApp.tsx` — public editable demo
+- `app/login/` and `app/farmer/` — account, farmer workspace, and printable report
+- `components/portal/` — farm, crop, document, program, and FPO screens
+- `app/api/` — authenticated API routes
+- `lib/server/` — SQLite storage, password hashing, sessions, validation, and private files
+- `lib/readiness.ts` and `lib/programs.ts` — transparent scoring, gaps, and pathway rules
 
-The UI uses Next.js, React, TypeScript, CSS, and Lucide icons. There are no API keys or backend services.
+The app uses Next.js, React, TypeScript, CSS, Lucide icons, and SQLite. It needs no API keys. Passwords are salted and hashed; session cookies are HTTP-only. Files are limited to PDF, JPEG, PNG, or WebP at 8 MB each. For a real public deployment, move the database and files to managed persistent services, enable HTTPS and backups, and add production identity verification and abuse protection. This local hackathon app has no SMS/OTP, document verification, live carbon-program feed, or credit issuance.
+
+## Checks
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
 ## Research starting points
 
