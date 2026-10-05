@@ -2,6 +2,8 @@
 
 AgriCarbon is a farmer-friendly **carbon-program readiness web app** built at Usha Martin University for a 24-hour hackathon. It helps a farmer answer three questions: **Am I ready? What is missing? What should I do next?** The interactive [About page](app/about/page.tsx) explains the prototype to farmers and mentors and links to official public resources.
 
+**Presenting the project?** Use the [feature walkthrough and five-minute judge demo](docs/JUDGE_GUIDE.md). It explains what each screen does, what to say, and the prototype's limits.
+
 The app has a public editable demo and a signed-in farmer workspace. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
 
 ## Show the UI to mentors
