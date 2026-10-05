@@ -13,7 +13,6 @@ import {
   FileText,
   FolderOpen,
   Lightbulb,
-  Leaf,
   LogOut,
   Menu,
   MapPinned,
@@ -221,48 +220,45 @@ export default function FarmerPortal({ user }: { user: User }) {
   }
 
   const nav = [
-    { id: "overview" as PortalPage, text: "Overview", icon: Sprout },
+    { id: "overview" as PortalPage, text: "My farm", icon: Sprout },
     {
       id: "analysis" as PortalPage,
-      text: "Carbon credit analysis",
+      text: "Carbon readiness",
       icon: BarChart3,
     },
     {
       id: "assessment" as PortalPage,
-      text: "Farm assessment",
+      text: "Farm details",
       icon: ClipboardCheck,
     },
     { id: "crops" as PortalPage, text: "Crop history", icon: BookOpen },
     { id: "land" as PortalPage, text: "Land & papers", icon: MapPinned },
-    { id: "mrv" as PortalPage, text: "MRV diary", icon: Activity },
+    { id: "mrv" as PortalPage, text: "Field diary", icon: Activity },
     {
       id: "documents" as PortalPage,
-      text: "Document locker",
+      text: "My documents",
       icon: FolderOpen,
     },
-    { id: "programs" as PortalPage, text: "Program pathways", icon: FileText },
+    { id: "programs" as PortalPage, text: "Program options", icon: FileText },
     { id: "groups" as PortalPage, text: "Farmer groups", icon: Users },
     {
       id: "accounts" as PortalPage,
       text: "Farm accounts",
       icon: BadgeIndianRupee,
     },
-    { id: "guide" as PortalPage, text: "My guide", icon: Lightbulb },
+    { id: "guide" as PortalPage, text: "Help & next steps", icon: Lightbulb },
   ];
 
   return (
     <div className="app-shell portal-shell">
       <aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}>
         <Link className="brand" href="/">
-          <span className="brand-mark">
-            <Leaf size={23} />
-          </span>
           <span>
             <strong>AgriCarbon</strong>
-            <small>FARM READINESS</small>
+            <small>Farm records & readiness</small>
           </span>
         </Link>
-        <div className="sidebar-label">MY FARM WORKSPACE</div>
+        <div className="sidebar-label">Your farm</div>
         <nav aria-label="Farmer navigation">
           {nav.map((item) => (
             <button
@@ -289,11 +285,11 @@ export default function FarmerPortal({ user }: { user: User }) {
               Record each season, save documents, and follow your next steps.
             </p>
             <button onClick={() => navigate("documents")}>
-              Open document locker <ArrowRight size={14} />
+              Open documents <ArrowRight size={14} />
             </button>
           </div>
           <span className="hackathon-label">
-            PREPARATION · NOT CREDIT ISSUANCE
+            Prepared at Usha Martin University
           </span>
         </div>
       </aside>
@@ -314,7 +310,7 @@ export default function FarmerPortal({ user }: { user: User }) {
             <Menu size={23} />
           </button>
           <div className="topbar-copy">
-            <span className="topbar-eyebrow">Your farm workspace</span>
+            <span className="topbar-eyebrow">AgriCarbon / {user.name}</span>
             <span className="topbar-page">
               {nav.find((item) => item.id === page)?.text}
             </span>

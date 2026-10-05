@@ -36,8 +36,8 @@ export default function CarbonAnalysisPanel({
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">YOUR MAIN ANALYSIS</p>
-          <h1>Carbon credit analysis, made clear.</h1>
+          <p className="eyebrow">Carbon program preparation</p>
+          <h1>Your carbon readiness</h1>
           <p>
             See what your farming records show today and what a carbon program
             would still need to review.
@@ -51,7 +51,7 @@ export default function CarbonAnalysisPanel({
       <section className="panel carbon-analysis-hero">
         <div>
           <span className="hero-kicker">
-            <BarChart3 size={17} /> YOUR CURRENT POSITION
+            <BarChart3 size={17} /> Your record today
           </span>
           <h2>{analysis.review.label}</h2>
           <p>{analysis.review.reason}</p>
@@ -71,17 +71,23 @@ export default function CarbonAnalysisPanel({
 
       <div className="carbon-analysis-metrics">
         <div className="panel">
-          <span>FARMING PRACTICES</span>
-          <strong>{Math.round(analysis.practiceScore)}<small>/100</small></strong>
+          <span>Farming practices</span>
+          <strong>
+            {Math.round(analysis.practiceScore)}
+            <small>/100</small>
+          </strong>
           <p>Self-reported practice preparation</p>
         </div>
         <div className="panel">
-          <span>PROOF CHECKLIST</span>
-          <strong>{analysis.evidenceReady}<small>/{analysis.evidenceTotal}</small></strong>
+          <span>Proof checklist</span>
+          <strong>
+            {analysis.evidenceReady}
+            <small>/{analysis.evidenceTotal}</small>
+          </strong>
           <p>Key records on file, still unverified</p>
         </div>
         <div className="panel">
-          <span>ISSUED CREDITS</span>
+          <span>Issued credits</span>
           <strong className="carbon-unavailable">Unavailable</strong>
           <p>No registry connected to verify a balance</p>
         </div>
@@ -89,7 +95,7 @@ export default function CarbonAnalysisPanel({
 
       <div className="carbon-analysis-grid">
         <section className="panel carbon-analysis-card">
-          <span className="card-label">WHAT YOUR FARM REPORTS</span>
+          <span className="card-label">Your saved answers</span>
           <h2>Practices worth documenting</h2>
           <p>
             These are your saved answers. A program decides which practices,
@@ -216,12 +222,16 @@ export default function CarbonAnalysisPanel({
           <article>
             <span>2</span>
             <strong>Program screening</strong>
-            <p>A real program checks its method, eligibility, and additionality.</p>
+            <p>
+              A real program checks its method, eligibility, and additionality.
+            </p>
           </article>
           <article>
             <span>3</span>
             <strong>Measure and verify</strong>
-            <p>Approved monitoring and independent verification quantify results.</p>
+            <p>
+              Approved monitoring and independent verification quantify results.
+            </p>
           </article>
           <article>
             <span>4</span>

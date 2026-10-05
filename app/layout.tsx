@@ -4,9 +4,10 @@ import "./portal.css";
 import "./report.css";
 import "./expansion.css";
 import "./carbon-analysis.css";
+import "./humanized.css";
 
 export const metadata: Metadata = {
-  title: "AgriCarbon | Farm readiness, made simple",
+  title: "AgriCarbon | Farm records and carbon readiness",
   description:
     "A simple guide to farm records, climate-smart practices, and carbon-program readiness.",
   icons: { icon: "/favicon.svg" },

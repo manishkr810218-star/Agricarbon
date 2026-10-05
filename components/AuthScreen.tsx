@@ -1,14 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Leaf,
-  LockKeyhole,
-  ShieldCheck,
-  Sprout,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, LockKeyhole, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -71,19 +64,16 @@ export default function AuthScreen() {
     <main className="auth-shell">
       <section className="auth-story">
         <Link href="/" className="auth-brand">
-          <span className="brand-mark">
-            <Leaf size={23} />
-          </span>
           <strong>AgriCarbon</strong>
         </Link>
         <div className="auth-story-inner">
           <span className="auth-pill">
-            <Sprout size={16} /> FARM READINESS, MADE SIMPLE
+            Usha Martin University · Farm records
           </span>
           <h1>
-            Every good farm
+            Your farm records,
             <br />
-            has a story worth showing.
+            in one place.
           </h1>
           <p>
             Keep your farm details, crop history and evidence together. See what
@@ -112,7 +102,7 @@ export default function AuthScreen() {
             <ArrowLeft size={16} /> View public demo
           </Link>
           <span className="eyebrow">
-            {mode === "register" ? "START YOUR FARM PROFILE" : "WELCOME BACK"}
+            {mode === "register" ? "Start your farm record" : "Welcome back"}
           </span>
           <h2>
             {mode === "register"

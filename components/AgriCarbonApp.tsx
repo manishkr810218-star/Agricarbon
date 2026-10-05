@@ -34,15 +34,15 @@ type Language = "en" | "hi";
 
 const copy = {
   en: {
-    overview: "Overview",
-    assessment: "Check readiness",
+    overview: "My farm",
+    assessment: "Farm check",
     records: "My records",
-    guide: "How it works",
-    topNote: "A clearer path for your farm",
-    demo: "Editable demo farm",
+    guide: "Getting started",
+    topNote: "Public example",
+    demo: "Example farm · you can edit it",
     personal: "My farm",
-    hello: "Good to see you",
-    heroTitle: "Good farming deserves good records.",
+    hello: "Farm record",
+    heroTitle: "Know what your farm record can show.",
     heroBody:
       "See how ready your farm is for a carbon program, what evidence is missing, and what to do next.",
     start: "Check my readiness",
@@ -83,15 +83,15 @@ const copy = {
       "AgriCarbon supports preparation only. A verified program decides eligibility and credits after formal measurement and independent checks.",
   },
   hi: {
-    overview: "सारांश",
+    overview: "मेरा खेत",
     assessment: "तैयारी जाँचें",
     records: "मेरे रिकॉर्ड",
     guide: "यह कैसे काम करता है",
-    topNote: "आपके खेत के लिए आसान रास्ता",
+    topNote: "सार्वजनिक नमूना",
     demo: "बदलने योग्य नमूना खेत",
     personal: "मेरा खेत",
     hello: "नमस्ते",
-    heroTitle: "अच्छी खेती का अच्छा रिकॉर्ड रखें।",
+    heroTitle: "जानें कि आपके खेत के रिकॉर्ड में क्या है।",
     heroBody:
       "देखें कि आपका खेत कार्बन कार्यक्रम के लिए कितना तैयार है, क्या प्रमाण कम हैं और आगे क्या करना है।",
     start: "तैयारी जाँचें",
@@ -199,83 +199,51 @@ const localizeLevel = (level: string, lang: Language) =>
       }[level] ?? level)
     : level;
 
-function FarmArt() {
+function FarmNote({ farm, lang }: { farm: Farm; lang: Language }) {
   return (
-    <svg
-      className="farm-art"
-      viewBox="0 0 540 320"
-      role="img"
-      aria-label="Illustrated green farm with trees and fields"
+    <div
+      className="farm-note"
+      aria-label={field("Example farm details", "खेत का विवरण", lang)}
     >
-      <defs>
-        <linearGradient id="sky" x2="0" y2="1">
-          <stop stopColor="#d8eee7" />
-          <stop offset="1" stopColor="#f7edcc" />
-        </linearGradient>
-        <clipPath id="clip">
-          <rect width="540" height="320" rx="26" />
-        </clipPath>
-      </defs>
-      <g clipPath="url(#clip)">
-        <rect width="540" height="320" fill="url(#sky)" />
-        <circle cx="376" cy="86" r="42" fill="#f7cd65" />
-        <path d="M0 191Q90 145 180 174T355 160T540 170V320H0Z" fill="#a6bd86" />
-        <path d="M0 220Q125 163 240 214T540 204V320H0Z" fill="#6f9f79" />
-        <path d="M0 270Q115 205 265 239T540 223V320H0Z" fill="#326f55" />
-        <path d="M0 292Q128 233 240 270T540 257V320H0Z" fill="#1d5943" />
-        <path
-          d="M250 320Q287 274 381 254Q451 239 540 236V320Z"
-          fill="#d4c494"
-        />
-        <path
-          d="M286 320Q323 280 404 260M334 320Q367 284 447 253M394 320Q421 286 491 245M456 320Q473 284 528 240"
-          fill="none"
-          stroke="#f3e3b0"
-          strokeWidth="5"
-          opacity=".72"
-        />
-        <path
-          d="M75 235v-80"
-          stroke="#365b40"
-          strokeWidth="12"
-          strokeLinecap="round"
-        />
-        <circle cx="75" cy="143" r="34" fill="#2c7753" />
-        <circle cx="49" cy="153" r="25" fill="#398960" />
-        <circle cx="98" cy="157" r="24" fill="#3c8a62" />
-        <path
-          d="M470 220v-77"
-          stroke="#365b40"
-          strokeWidth="11"
-          strokeLinecap="round"
-        />
-        <circle cx="470" cy="133" r="32" fill="#286d4f" />
-        <circle cx="445" cy="145" r="24" fill="#398960" />
-        <circle cx="492" cy="150" r="22" fill="#3f8d63" />
-        <path
-          d="M166 225v-48l46-24 44 24v51"
-          fill="#f2e4c2"
-          stroke="#586c52"
-          strokeWidth="4"
-        />
-        <path
-          d="M160 179l52-31 50 31"
-          fill="none"
-          stroke="#8e6b4a"
-          strokeWidth="13"
-          strokeLinejoin="round"
-        />
-        <rect x="204" y="190" width="20" height="38" rx="3" fill="#8d7354" />
-        <rect x="176" y="185" width="15" height="16" rx="2" fill="#8ab9ad" />
-        <path
-          d="M0 310Q70 268 143 281T275 290"
-          fill="none"
-          stroke="#a8c885"
-          strokeWidth="7"
-          opacity=".75"
-        />
-      </g>
-    </svg>
+      <div className="farm-note-top">
+        <span>{field("FIELD NOTES", "खेत की जानकारी", lang)}</span>
+        <span>AgriCarbon</span>
+      </div>
+      <strong>{farm.name || field("Your farm", "आपका खेत", lang)}</strong>
+      <p>
+        {[farm.village, farm.district].filter(Boolean).join(", ") ||
+          field("Add your village", "अपना गाँव जोड़ें", lang)}
+      </p>
+      <dl>
+        <div>
+          <dt>{field("Land area", "खेत का क्षेत्र", lang)}</dt>
+          <dd>
+            {farm.area ? `${farm.area} ${field("acres", "एकड़", lang)}` : "—"}
+          </dd>
+        </div>
+        <div>
+          <dt>{field("Crop history", "फसल का इतिहास", lang)}</dt>
+          <dd>
+            {farm.cropHistoryYears} / 3 {field("years", "वर्ष", lang)}
+          </dd>
+        </div>
+        <div>
+          <dt>{field("Next record", "अगला रिकॉर्ड", lang)}</dt>
+          <dd>
+            {farm.cropHistoryYears < 3
+              ? field("Past crop seasons", "पिछले फसल मौसम", lang)
+              : field("Keep photos dated", "तारीख सहित फोटो रखें", lang)}
+          </dd>
+        </div>
+      </dl>
+      <small>
+        {field(
+          "Change any answer to see the result update.",
+          "जवाब बदलें और नया परिणाम देखें।",
+          lang,
+        )}
+      </small>
+    </div>
   );
 }
 
@@ -395,16 +363,19 @@ export default function AgriCarbonApp() {
     <div className="app-shell" ref={topRef}>
       <aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}>
         <div className="brand">
-          <span className="brand-mark">
-            <Leaf size={23} strokeWidth={2.4} />
-          </span>
           <span>
             <strong>AgriCarbon</strong>
-            <small>FARM READINESS</small>
+            <small>
+              {field(
+                "Farm records & readiness",
+                "खेती का रिकॉर्ड और तैयारी",
+                lang,
+              )}
+            </small>
           </span>
         </div>
         <div className="sidebar-label">
-          {field("YOUR WORKSPACE", "आपका कार्यक्षेत्र", lang)}
+          {field("Public example", "सार्वजनिक नमूना", lang)}
         </div>
         <nav aria-label="Main navigation">
           {nav.map((item) => (
@@ -425,11 +396,7 @@ export default function AgriCarbonApp() {
               <HandHeart size={21} />
             </span>
             <strong>
-              {field(
-                "Small steps. Stronger farm.",
-                "छोटे कदम। बेहतर खेत।",
-                lang,
-              )}
+              {field("Start with one season.", "एक मौसम से शुरुआत करें।", lang)}
             </strong>
             <p>
               {field(
@@ -443,7 +410,7 @@ export default function AgriCarbonApp() {
             </button>
           </div>
           <span className="hackathon-label">
-            BUILT FOR FARMERS · HACKATHON DEMO
+            Made at Usha Martin University
           </span>
         </div>
       </aside>
@@ -470,7 +437,9 @@ export default function AgriCarbonApp() {
             </span>
           </div>
           <div className="topbar-actions">
-            <Link className="account-link" href="/about">About</Link>
+            <Link className="account-link" href="/about">
+              About
+            </Link>
             <Link className="account-link" href="/login">
               {field("Farmer login", "किसान लॉगिन", lang)}{" "}
               <ArrowRight size={15} />
@@ -497,20 +466,19 @@ export default function AgriCarbonApp() {
                 <div>
                   <p className="eyebrow">
                     {t.hello}
-                    {farm.name ? `, ${farm.name.split(" ")[0]}` : ""}{" "}
-                    <span className="wave">✳</span>
+                    {farm.name ? `, ${farm.name.split(" ")[0]}` : ""}
                   </p>
                   <h1>
                     {field(
-                      "Let's grow a clearer future.",
-                      "आइए बेहतर भविष्य की ओर बढ़ें।",
+                      "Start with your farm records.",
+                      "अपने खेत के रिकॉर्ड से शुरू करें।",
                       lang,
                     )}
                   </h1>
                   <p>
                     {field(
-                      "Everything you need to understand your farm's readiness, in one place.",
-                      "अपने खेत की तैयारी समझने के लिए सारी जानकारी एक जगह।",
+                      "See what is recorded, what is missing, and what to do next.",
+                      "देखें क्या दर्ज है, क्या बाकी है और अगला कदम क्या है।",
                       lang,
                     )}
                   </p>
@@ -524,11 +492,7 @@ export default function AgriCarbonApp() {
                 <div className="hero-copy">
                   <span className="hero-kicker">
                     <Sprout size={16} />
-                    {field(
-                      "WELCOME TO AGRICARBON",
-                      "AGRICARBON में स्वागत है",
-                      lang,
-                    )}
+                    {field("YOUR FARM FILE", "आपके खेत का रिकॉर्ड", lang)}
                   </span>
                   <h2>{t.heroTitle}</h2>
                   <p>{t.heroBody}</p>
@@ -552,7 +516,7 @@ export default function AgriCarbonApp() {
                     </button>
                   </div>
                 </div>
-                <FarmArt />
+                <FarmNote farm={farm} lang={lang} />
               </section>
               <section className="overview-grid">
                 <div className="score-card panel">
@@ -561,7 +525,11 @@ export default function AgriCarbonApp() {
                       <TrendingUp size={19} />
                     </span>
                     <span className="plain-tag">
-                      {field("LIVE RESULT", "वर्तमान परिणाम", lang)}
+                      {field(
+                        "From these answers",
+                        "इन जवाबों के आधार पर",
+                        lang,
+                      )}
                     </span>
                   </div>
                   <div className="score-main">
@@ -593,7 +561,11 @@ export default function AgriCarbonApp() {
                   <div className="panel-heading">
                     <div>
                       <span className="card-label">
-                        {field("A PLAN MADE FOR YOU", "आपकी कार्य योजना", lang)}
+                        {field(
+                          "What to record next",
+                          "अगला क्या दर्ज करें",
+                          lang,
+                        )}
                       </span>
                       <h3>{t.next}</h3>
                     </div>
@@ -640,7 +612,7 @@ export default function AgriCarbonApp() {
                   <div className="panel-heading">
                     <div>
                       <span className="card-label">
-                        {field("YOUR FARM SNAPSHOT", "आपके खेत की झलक", lang)}
+                        {field("Your farm check", "आपके खेत की जाँच", lang)}
                       </span>
                       <h3>{t.breakdown}</h3>
                     </div>
@@ -671,7 +643,7 @@ export default function AgriCarbonApp() {
                 <div className="right-stack">
                   <div className="panel quick-card">
                     <span className="card-label">{t.quick}</span>
-                    <h3>{field("Your farm, in focus", "आपका खेत", lang)}</h3>
+                    <h3>{field("Farm details", "खेत का विवरण", lang)}</h3>
                     <div className="quick-items">
                       <div>
                         <span className="quick-icon">
@@ -716,15 +688,15 @@ export default function AgriCarbonApp() {
                     <div>
                       <strong>
                         {field(
-                          "Your work already matters.",
-                          "आपकी मेहनत मायने रखती है।",
+                          "Keep a record each season.",
+                          "हर मौसम का रिकॉर्ड रखें।",
                           lang,
                         )}
                       </strong>
                       <p>
                         {field(
-                          "Good records help others see it too.",
-                          "अच्छे रिकॉर्ड इसे सबको दिखाते हैं।",
+                          "A dated field photo is a useful place to start.",
+                          "तारीख वाली खेत की फोटो से शुरुआत करें।",
                           lang,
                         )}
                       </p>
@@ -766,11 +738,7 @@ export default function AgriCarbonApp() {
               <div className="page-heading form-heading">
                 <div>
                   <p className="eyebrow">
-                    {field(
-                      "YOUR FARM, YOUR STORY",
-                      "आपका खेत, आपकी कहानी",
-                      lang,
-                    )}
+                    {field("Your answers", "आपके जवाब", lang)}
                   </p>
                   <h1>{t.assessment}</h1>
                   <p>{t.formIntro}</p>

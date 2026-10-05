@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Leaf,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, ShieldCheck } from "lucide-react";
 
 const journeys = {
   farmer: [
@@ -109,9 +103,6 @@ export default function AboutExperience() {
     <main className="agri-about-page">
       <header className="agri-about-top">
         <Link className="agri-about-brand" href="/">
-          <span className="brand-mark">
-            <Leaf size={22} />
-          </span>{" "}
           AgriCarbon
         </Link>
         <div>
@@ -123,9 +114,9 @@ export default function AboutExperience() {
       </header>
       <section className="agri-about-hero">
         <span className="hero-kicker">
-          <BookOpen size={17} /> ABOUT THE PROTOTYPE
+          <BookOpen size={17} /> About the project
         </span>
-        <h1>Good farming deserves a clear path to proof.</h1>
+        <h1>Farm records that are easier to use.</h1>
         <p>
           AgriCarbon is a hackathon prototype from Usha Martin University. It
           helps farmers organize land details, practice records, evidence, costs
@@ -143,8 +134,8 @@ export default function AboutExperience() {
       <section className="agri-about-content">
         <div className="agri-about-intro">
           <div>
-            <span className="card-label">HOW IT HELPS</span>
-            <h2>Choose the view that makes sense to you.</h2>
+            <span className="card-label">How it works</span>
+            <h2>See the steps for farmers and mentors.</h2>
           </div>
           <div className="agri-about-switch">
             <button
@@ -172,7 +163,7 @@ export default function AboutExperience() {
         </div>
       </section>
       <section className="agri-about-content">
-        <span className="card-label">PREWRITTEN GUIDE</span>
+        <span className="card-label">Common questions</span>
         <h2>Common questions, plain answers.</h2>
         <div className="agri-about-faq">
           {answers.map(([question, answer], index) => (
@@ -190,7 +181,7 @@ export default function AboutExperience() {
         </div>
       </section>
       <section className="agri-about-content">
-        <span className="card-label">OFFICIAL RESOURCES</span>
+        <span className="card-label">Official resources</span>
         <h2>Check facts with government sources.</h2>
         <p>
           These links open official external portals. AgriCarbon does not

@@ -34,47 +34,65 @@ export default function OverviewPanel({
     <>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">YOUR FARM, AT A GLANCE</p>
-          <h1>Hello, {farm.name || "farmer"}.</h1>
+          <p className="eyebrow">Your farm record</p>
+          <h1>{farm.name || "Your farm"}</h1>
           <p>
-            {farm.village}, {farm.district} · Keep building a clear record of
-            your farm.
+            {[farm.village, farm.district].filter(Boolean).join(", ") ||
+              "Add your location"}{" "}
+            · Your records and next steps.
           </p>
         </div>
         <span className="demo-badge">
           <span className="status-dot" />
-          Saved farm profile
+          Saved in your account
         </span>
       </div>
       <section className="portal-hero">
         <div>
           <span className="hero-kicker">
-            <Sprout size={16} /> YOUR READINESS JOURNEY
+            <Sprout size={16} /> Your next step
           </span>
           <h2>
-            See your progress.
+            Keep your farm story clear.
             <br />
-            Know your next step.
+            Start with the records.
           </h2>
           <p>
-            Every season and every record helps tell the story of your farm.
-            Your score explains preparation, not credit eligibility.
+            See which details support your carbon program readiness and which
+            ones still need a record.
           </p>
           <button
             className="button button-light"
             onClick={() => onNavigate("analysis")}
           >
-            Analyze my carbon readiness <ArrowRight size={17} />
+            See my carbon readiness <ArrowRight size={17} />
           </button>
         </div>
-        <div className="portal-hero-graphic">
-          <span className="portal-sun" />
-          <span className="portal-hill one" />
-          <span className="portal-hill two" />
-          <span className="portal-hill three" />
-          <span className="portal-hero-leaf">
-            <Leaf size={62} />
-          </span>
+        <div className="farm-note portal-farm-note">
+          <div className="farm-note-top">
+            <span>FARM FILE</span>
+            <span>AgriCarbon</span>
+          </div>
+          <strong>{farm.name || "Your farm"}</strong>
+          <p>
+            {[farm.village, farm.district].filter(Boolean).join(", ") ||
+              "Location to add"}
+          </p>
+          <dl>
+            <div>
+              <dt>Land</dt>
+              <dd>{farm.area ? `${farm.area} acres` : "To add"}</dd>
+            </div>
+            <div>
+              <dt>Crop years</dt>
+              <dd>{farm.cropHistoryYears} of 3 recorded</dd>
+            </div>
+            <div>
+              <dt>Documents</dt>
+              <dd>{documents.length} saved</dd>
+            </div>
+          </dl>
+          <small>Built from your saved information</small>
         </div>
       </section>
       <div className="portal-stat-grid">
@@ -117,7 +135,7 @@ export default function OverviewPanel({
       </div>
       <section className="panel agri-overview-guide">
         <div>
-          <span className="card-label">YOUR SMART, RULE-BASED GUIDE</span>
+          <span className="card-label">Suggested next step</span>
           <h3>{review.label}</h3>
           <p>{tips[0]?.title || "Keep your farm records current."}</p>
           <small>
@@ -128,22 +146,22 @@ export default function OverviewPanel({
           className="button button-primary"
           onClick={() => onNavigate("guide")}
         >
-          Ask my guide <ArrowRight size={17} />
+          See next steps <ArrowRight size={17} />
         </button>
       </section>
       <div className="agri-overview-status">
         <button className="panel" onClick={() => onNavigate("mrv")}>
-          <span className="card-label">MRV DIARY</span>
+          <span className="card-label">Field diary</span>
           <strong>{data.mrvEvents.length} activities</strong>
           <small>{mrv.linkedEvidence} linked to evidence · open diary →</small>
         </button>
         <button className="panel" onClick={() => onNavigate("land")}>
-          <span className="card-label">LAND PAPERS</span>
+          <span className="card-label">Land papers</span>
           <strong>{data.plots.length} plots</strong>
           <small>Organize each plot and its property papers →</small>
         </button>
         <button className="panel" onClick={() => onNavigate("accounts")}>
-          <span className="card-label">CURRENT CREDITS</span>
+          <span className="card-label">Current credits</span>
           <strong>Not verified</strong>
           <small>No registry connected · see accounts →</small>
         </button>
@@ -152,7 +170,7 @@ export default function OverviewPanel({
         <section className="panel portal-overview-card">
           <div className="panel-heading">
             <div>
-              <span className="card-label">YOUR ACTION PLAN</span>
+              <span className="card-label">Your next steps</span>
               <h3>What to do next</h3>
             </div>
             <button
@@ -185,7 +203,7 @@ export default function OverviewPanel({
         <section className="panel portal-overview-card">
           <div className="panel-heading">
             <div>
-              <span className="card-label">TRANSPARENT SCORING</span>
+              <span className="card-label">How your score was made</span>
               <h3>Readiness by area</h3>
             </div>
           </div>
