@@ -4,6 +4,20 @@ AgriCarbon is a farmer-friendly **carbon-program readiness demo** built at Usha 
 
 The current project is a frontend prototype. It does **not** calculate, issue, sell, or guarantee carbon credits. A real program must evaluate eligibility, establish a baseline, measure outcomes, and independently verify results.
 
+## Show the UI to mentors
+
+The screenshots below show the working frontend. Open this README on GitHub to view them immediately. The repository link shows the code and screenshots; it is not a hosted interactive website.
+
+**Desktop**
+
+![AgriCarbon desktop dashboard](docs/desktop-preview.png)
+
+**Phone**
+
+<img src="docs/mobile-preview.png" alt="AgriCarbon mobile dashboard" width="390" />
+
+For an interactive demo on a laptop, follow **Run locally** below. In the app, click **Check my readiness**, change an answer, and show how the score and next steps update. Then open **My records** and use the **अ / EN** button to show Hindi.
+
 ## Run locally
 
 Requires Node.js 20 or newer.
